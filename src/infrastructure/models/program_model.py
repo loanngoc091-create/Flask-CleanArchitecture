@@ -1,20 +1,18 @@
-from sqlalchemy import Column, Integer, String, DateTime
+# infrastructure/models/program_model.py
+from sqlalchemy import Column, Integer, String
 from infrastructure.databases.base import Base
+from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 
-class ProgramModel(Base):
-    __tablename__ = 'programs'
-    __table_args__ = {'extend_existing': True}  # Thêm dòng này
+class Program(Base):
+    __tablename__ = "programs"
 
-    id = Column(Integer, primary_key=True)
+    program_id = Column(Integer, primary_key=True)
+    year_applied = Column(Integer)
+    program_name = Column(String(150))
 
-    title = Column(String(255), nullable=False)
-    description = Column(String(255), nullable=True)
-    status = Column(String(50), nullable=False)
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime) 
-    
-    
-    # create table programs(
-    #     id Int primary key,
-    #     title nvarchar(255) not null,....
-    # )
+    department_id = Column(Integer, ForeignKey("departments.department_id"))
+
+    department = relationship("Department", back_populates="programs")
+    courses = relationship("Course", back_populates="program")
+    plos = relationship("PLO", back_populates="program")

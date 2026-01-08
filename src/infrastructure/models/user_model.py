@@ -1,14 +1,17 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+# infrastructure/models/user_model.py
+from sqlalchemy import Column, Integer, String
 from infrastructure.databases.base import Base
+from sqlalchemy.orm import relationship
 
-class UserModel(Base):
-    __tablename__ = 'flask_user'
-    # __table_args__ = {'extend_existing': True}  # Thêm dòng này
 
-    id = Column(Integer, primary_key=True)
-    user_name = Column(String(18), nullable=False,unique= True)
-    password = Column(String(18), nullable=False)
-    description = Column(String(255), nullable=True)
-    status = Column(Boolean, nullable=False)
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime) 
+class User(Base):
+    __tablename__ = "users"
+
+    user_id = Column(Integer, primary_key=True)
+    full_name = Column(String(150))
+    status = Column(String(150))
+    email = Column(String(150))
+
+    roles = relationship("UserRole", back_populates="user")
+    approvals = relationship("Approval", back_populates="user")
+

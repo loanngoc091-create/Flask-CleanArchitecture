@@ -1,18 +1,18 @@
-from sqlalchemy import Column, Integer, String, DateTime
+# infrastructure/models/course_model.py
+from sqlalchemy import Column, Integer, String, ForeignKey
 from infrastructure.databases.base import Base
+from sqlalchemy.orm import relationship
 
-class CourseModel(Base):
-    __tablename__ = 'courses'
-    __table_args__ = {'extend_existing': True}  # Thêm dòng này
 
-    id = Column(Integer, primary_key=True)
-    course_name = Column(String(255), nullable=False)
-    description = Column(String(255), nullable=True)
-    status = Column(String(50), nullable=False)
-    start_date = Column(DateTime, nullable=False)
-    end_date = Column(DateTime, nullable=False)
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime) 
-    
-    # ORM: Object Relational Mapping
-    # Anhs xa giua database va object trong code
+class Course(Base):
+    __tablename__ = "courses"
+
+    course_id = Column(Integer, primary_key=True)
+    course_code = Column(String(50))
+    course_name = Column(String(150))
+    credits = Column(Integer)
+
+    program_id = Column(Integer, ForeignKey("programs.program_id"))
+
+    program = relationship("Program", back_populates="courses")
+    syllabi = relationship("Syllabus", back_populates="course")

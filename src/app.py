@@ -1,13 +1,14 @@
 from flask import Flask, jsonify
 from api.swagger import spec
 from api.controllers.todo_controller import bp as todo_bp
-from api.middleware import middleware
+from api.middleware import setup_middleware
 from api.responses import success_response
 from infrastructure.databases import init_db
 from config import Config
 from flasgger import Swagger
 from config import SwaggerConfig
 from flask_swagger_ui import get_swaggerui_blueprint
+from infrastructure.databases.mssql import init_mssql
 
 
 def create_app():
@@ -32,7 +33,7 @@ def create_app():
         print(f"Error initializing database: {e}")
 
     # Register middleware
-    middleware(app)
+    setup_middleware(app)
 
     # Register routes
     with app.test_request_context():
@@ -49,7 +50,10 @@ def create_app():
 
     return app
 # Run the application
+init_mssql()
 
 if __name__ == '__main__':
     app = create_app()
     app.run(host='0.0.0.0', port=9999, debug=True)
+
+
