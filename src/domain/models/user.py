@@ -1,12 +1,16 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
-from infrastructure.databases.base import Base
+# src/domain/entities/user.py
+
+import hashlib
+
 
 class User:
-    
-    def __innit__(self, user_name: str, password: str, description: str = None, status: bool = True):
-        self.user_name = user_name
+    def __init__(self, user_id, email, password, role_code, role_name):
+        self.user_id = user_id
+        self.email = email
         self.password = password
-        self.description = description
-        self.status = status
-        self.created_at = None
-        self.updated_at = None
+        self.role_code = role_code
+        self.role_name = role_name
+        
+
+    def verify_password(self, password: str) -> bool:
+        return password == self.password_hash

@@ -1,18 +1,31 @@
-from flask import request, jsonify
+from functools import wraps
+from flask import request, jsonify, g
+import jwt
+from config import Config
 
-def setup_middleware(app):
-    @app.before_request
-    def log_request_info():
-        app.logger.debug('Headers: %s', request.headers)
-        app.logger.debug('Body: %s', request.get_data())
+def jwt_required():
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            auth_header = request.headers.get("Authorization")
 
-    @app.after_request
-    def add_custom_headers(response):
-        response.headers['X-Custom-Header'] = 'Value'
-        return response
+            if not auth_header:
+                return jsonify({"error": "Missing token"}), 401
 
-    @app.errorhandler(Exception)
-    def handle_exception(error):
-        response = jsonify({'error': str(error)})
-        response.status_code = 500
-        return response
+            token = auth_header.replace("Bearer ", "").strip()
+
+            try:
+                payload = jwt.decode(
+                    token,
+                    Config.SECRET_KEY,
+                    algorithms=["HS256"]
+                )
+                g.user = payload
+            except jwt.ExpiredSignatureError:
+                return jsonify({"error": "Token expired"}), 401
+            except jwt.InvalidTokenError:
+                return jsonify({"error": "Invalid token"}), 401
+
+            return f(*args, **kwargs)
+        return wrapper
+    return decorator

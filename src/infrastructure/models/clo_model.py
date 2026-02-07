@@ -12,4 +12,6 @@ class CLO(Base):
 
     syllabus_id = Column(Integer, ForeignKey("syllabi.syllabus_id"))
 
-    syllabus = relationship("Syllabus", back_populates="clos")
+    syllabus = relationship("SyllabusModel", back_populates="clos")
+
+    

@@ -16,5 +16,5 @@ class Approval(Base):
     syllabus_id = Column(Integer, ForeignKey("syllabi.syllabus_id"))
 
     user = relationship("User", back_populates="approvals")
-    syllabus = relationship("Syllabus", back_populates="approvals")
+    syllabus = relationship("SyllabusModel", back_populates="approvals")
 

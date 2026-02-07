@@ -1,15 +1,25 @@
-from apispec import APISpec
-from apispec.ext.marshmallow import MarshmallowPlugin
-from apispec_webframeworks.flask import FlaskPlugin
-from api.schemas.todo import TodoRequestSchema, TodoResponseSchema
+from flask import Blueprint
 
-spec = APISpec(
-    title="Todo API",
-    version="1.0.0",
-    openapi_version="3.0.2",
-    plugins=[FlaskPlugin(), MarshmallowPlugin()],
-)
+swagger_bp = Blueprint("swagger", __name__)
 
-# Đăng ký schema để tự động sinh model
-spec.components.schema("TodoRequest", schema=TodoRequestSchema)
-spec.components.schema("TodoResponse", schema=TodoResponseSchema)
+@swagger_bp.route("/docs")
+def swagger_ui():
+    return """
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API Docs</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+  <script>
+    SwaggerUIBundle({
+      url: '/openapi.json',
+      dom_id: '#swagger-ui'
+    });
+  </script>
+</body>
+</html>
+"""

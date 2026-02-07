@@ -1,11 +1,10 @@
-from sqlalchemy import create_engine
+from flask import Flask, jsonify
 
-engine = create_engine(
-    "mssql+pymssql://sa:Aa%40123456@localhost:1433/FlaskApiDB"
-)
+app = Flask(__name__)
 
-try:
-    with engine.connect() as conn:
-        print("✅ CONNECT OK")
-except Exception as e:
-    print("❌ ERROR:", e)
+@app.route("/ping")
+def ping():
+    return jsonify({"msg": "pong"})
+
+if __name__ == "__main__":
+    app.run(port=9999, debug=True)

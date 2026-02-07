@@ -13,6 +13,7 @@ class Course(Base):
     credits = Column(Integer)
 
     program_id = Column(Integer, ForeignKey("programs.program_id"))
+    lecturer_id = Column(Integer, ForeignKey("users.user_id")) 
 
     program = relationship("Program", back_populates="courses")
-    syllabi = relationship("Syllabus", back_populates="course")
+    syllabi = relationship("SyllabusModel", back_populates="course")
